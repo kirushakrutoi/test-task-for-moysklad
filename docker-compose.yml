@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  products_app:
+    build: ./
+    container_name: products_app
+    environment:
+      SPRING_DB_URL: jdbc:postgresql://db:5432/products
+      SPRING_DB_USER: kirill
+      SPRING_DB_PASSWORD: 12345
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: db
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_USER: kirill
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - ~/data/postgres/product:/var/lib/postgresql/data/
+    ports:
+      - 5432
