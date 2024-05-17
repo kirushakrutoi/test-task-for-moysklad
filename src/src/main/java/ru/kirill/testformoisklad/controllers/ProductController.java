@@ -23,7 +23,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/products")
 public class ProductController {
-
     @Autowired
     @Qualifier("productDbService")
     private ProductStorage productStorage;
