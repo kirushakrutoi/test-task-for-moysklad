@@ -28,6 +28,7 @@ public class Product {
     @Min(value = 0, message = "The price should be less than 0")
     @Column(name = "price")
     private BigDecimal price;
+    @Column(name = "in_presence")
     private boolean inPresence;
 
     public Product(String name, String description, BigDecimal price, boolean inPresence) {

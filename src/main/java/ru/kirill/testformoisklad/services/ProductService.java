@@ -10,7 +10,7 @@ import ru.kirill.testformoisklad.repositories.ProductRepository;
 import java.util.List;
 
 @Service
-public class ProductService implements ProductStorage{
+public class ProductService {
 
     private final ProductRepository productRepository;
 

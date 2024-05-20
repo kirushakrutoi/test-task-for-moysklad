@@ -1,15 +1,18 @@
 package ru.kirill.testformoisklad.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.kirill.testformoisklad.exceptions.IncorrectRequestParamException;
 import ru.kirill.testformoisklad.exceptions.ProductNotFoundException;
+import ru.kirill.testformoisklad.models.DTOs.FilterAndSort;
 import ru.kirill.testformoisklad.models.DTOs.ProductDTO;
 import ru.kirill.testformoisklad.models.Product;
 import ru.kirill.testformoisklad.repositories.ProductDbRepository;
 import ru.kirill.testformoisklad.util.Converter;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -53,5 +56,32 @@ public class ProductDbService implements ProductStorage{
             throw new ProductNotFoundException("Product with this id not found");
         }
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Product> getProductsWithFilter(Map<String, String> allParams) throws IncorrectRequestParamException {
+        FilterAndSort filterAndSort = new FilterAndSort();
+
+        for(String param : allParams.keySet()){
+            if(param.equals("productName"))
+                return productRepository.findByNameStartingWith(allParams.get(param));
+
+            if(param.equals("lessPrice"))
+                return productRepository.findByPriceGreaterThan(new BigDecimal(allParams.get(param)));
+
+            if(param.equals("morePrice"))
+                return productRepository.findByPriceLessThan(new BigDecimal(allParams.get(param)));
+
+            if(param.equals("productInPresence"))
+                return productRepository.findByInPresence(allParams.get(param).equals("true"));
+
+            if(param.equals("orderByName"))
+                return productRepository.findAllByOrderByName();
+
+            if(param.equals("sortByPrice"))
+                return productRepository.findAllByOrderByPrice();
+        }
+
+        throw new IncorrectRequestParamException("Incorrect request param");
     }
 }
